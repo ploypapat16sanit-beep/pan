@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบฐานข้อมูลนักเรียน ปวช. อิเล็กทรอนิกส์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ea00d9;
+            --dark-bg: #050505;
+            --panel-bg: rgba(10, 10, 15, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-pink), 0 0 15px var(--neon-pink);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--neon-pink);
+            padding-bottom: 10px;
+        }
+
+        /* เมนูนำทาง */
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--neon-blue);
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            border: 1px solid var(--neon-blue);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--neon-blue), inset 0 0 5px var(--neon-blue);
+            flex: 1 1 calc(33.333% - 15px);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            text-shadow: none;
+            font-weight: bold;
+        }
+
+        /* พื้นที่แสดงเนื้อหา */
+        main {
+            width: 100%;
+            max-width: 1000px;
+            flex-grow: 1;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-pink);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(234, 0, 217, 0.2), inset 0 0 10px rgba(234, 0, 217, 0.1);
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* การแสดงไฟล์ PDF */
+        .pdf-container {
+            width: 100%;
+            height: 60vh;
+            border: 1px solid var(--neon-blue);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            background-color: #111;
+        }
+
+        .fallback-link {
+            display: inline-block;
+            color: var(--neon-blue);
+            text-decoration: none;
+            border: 1px dashed var(--neon-blue);
+            padding: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .fallback-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* เครดิตนักพัฒนา */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .credit {
+            color: var(--neon-blue);
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        @media (max-width: 600px) {
+            .nav-btn {
+                flex: 1 1 100%;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ข้อมูลนักเรียน ปวช. อิเล็กทรอนิกส์</h1>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="openMenu('menu1')">1. ส่วนตัว</button>
+        <button class="nav-btn" onclick="openMenu('menu2')">2. กิจกรรม</button>
+        <button class="nav-btn" onclick="openMenu('menu3')">3. ตารางเรียน</button>
+        <button class="nav-btn" onclick="openMenu('menu4')">4. การสวดมนต์</button>
+        <button class="nav-btn" onclick="openMenu('menu5')">5. กีฬา</button>
+        <button class="nav-btn" onclick="openMenu('menu6')">6. การเรียนรู้</button>
+    </nav>
+
+    <main>
+        <section id="menu1" class="tab-content active">
+            <h2>ข้อมูลส่วนตัว</h2>
+            <iframe class="pdf-container" src="personal.pdf" title="ข้อมูลส่วนตัว"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="personal.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF ข้อมูลส่วนตัว</a></p>
+        </section>
+
+        <section id="menu2" class="tab-content">
+            <h2>กิจกรรม</h2>
+            <iframe class="pdf-container" src="activity.pdf" title="กิจกรรม"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="activity.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF กิจกรรม</a></p>
+        </section>
+
+        <section id="menu3" class="tab-content">
+            <h2>ตารางเรียน</h2>
+            <iframe class="pdf-container" src="schedule.pdf" title="ตารางเรียน"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="schedule.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF ตารางเรียน</a></p>
+        </section>
+
+        <section id="menu4" class="tab-content">
+            <h2>การสวดมนต์</h2>
+            <iframe class="pdf-container" src="pray.pdf" title="การสวดมนต์"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="pray.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF การสวดมนต์</a></p>
+        </section>
+
+        <section id="menu5" class="tab-content">
+            <h2>กีฬา</h2>
+            <iframe class="pdf-container" src="sports.pdf" title="กีฬา"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="sports.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF กีฬา</a></p>
+        </section>
+
+        <section id="menu6" class="tab-content">
+            <h2>การเรียนรู้</h2>
+            <iframe class="pdf-container" src="learning.pdf" title="การเรียนรู้"></iframe>
+            <p>หากไม่สามารถดูไฟล์ได้ <a href="learning.pdf" class="fallback-link" target="_blank">คลิกเพื่อดาวน์โหลด/เปิดไฟล์ PDF การเรียนรู้</a></p>
+        </section>
+    </main>
+
+    <footer>
+        <p class="credit">ผู้พัฒนา: นาวรณา สาขาอิเล็กทรอนิกส์</p>
+    </footer>
+
+    <script>
+        function openMenu(menuId) {
+            // ซ่อนเนื้อหาทั้งหมด
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // เอาคลาส active ออกจากปุ่มทั้งหมด
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // แสดงเนื้อหาที่เลือกและเน้นปุ่มที่ถูกคลิก
+            document.getElementById(menuId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
